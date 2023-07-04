@@ -1,11 +1,6 @@
 const { nanoid } = require('nanoid');
-
-const errorMessage = {
-  add: 'Catatan gagal ditambahkan',
-  notFound: 'Catatan tidak ditemukan',
-  edit: 'Gagal memperbarui catatan. Id tidak ditemukan',
-  delete: 'Catatan gagal dihapus. Id tidak ditemukan',
-};
+const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 class NotesService {
   constructor() {
@@ -30,7 +25,7 @@ class NotesService {
 
     const isSuccess = this._notes.filter((note) => note.id === id).length > 0;
 
-    if (!isSuccess) throw new Error(errorMessage.add);
+    if (!isSuccess) throw new InvariantError('Catatan gagal ditambahkan');
 
     return id;
   }
@@ -41,14 +36,14 @@ class NotesService {
 
   getNoteById(id) {
     const note = this._notes.find((n) => n.id === id);
-    if (!note) throw new Error(errorMessage.notFound);
+    if (!note) throw new NotFoundError('Catatan tidak ditemukan');
 
     return note;
   }
 
   editNoteById(id, { title, tags, body }) {
     const index = this._notes.findIndex((note) => note.id === id);
-    if (index === -1) throw new Error(errorMessage.edit);
+    if (index === -1) throw new NotFoundError('Gagal memperbarui catatan. Id tidak ditemukan');
 
     const updatedAt = new Date().toISOString();
     this._notes[index] = {
@@ -62,7 +57,7 @@ class NotesService {
 
   deleteNoteById(id) {
     const index = this._notes.findIndex((note) => note.id === id);
-    if (index === -1) throw new Error(errorMessage.delete);
+    if (index === -1) throw new NotFoundError('Catatan gagal dihapus. Id tidak ditemukan');
 
     this._notes.splice(index, 1);
   }
