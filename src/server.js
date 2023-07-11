@@ -1,5 +1,5 @@
 const Hapi = require('@hapi/hapi');
-const NotesService = require('./services/inMemory/notesService');
+const NotesService = require('./services/postgres/NotesService');
 const notes = require('./api/notes');
 const NotesValidator = require('./validator/notes');
 require('dotenv').config();
